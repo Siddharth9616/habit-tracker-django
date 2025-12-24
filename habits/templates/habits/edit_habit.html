@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-md-6 mx-auto">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h4>Edit Habit</h4>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-success w-100">Save</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h4>📅 Weekly Analytics</h4>
+
+<canvas id="weeklyChart"></canvas>
+
+<script>
+const data = {{ data|safe }};
+new Chart(document.getElementById('weeklyChart'), {
+  type: 'bar',
+  data: {
+    labels: data.map(d => d.day),
+    datasets: [{
+      label: 'Completed Habits',
+      data: data.map(d => d.count),
+      backgroundColor: '#0d6efd'
+    }]
+  }
+});
+</script>
+{% endblock %}

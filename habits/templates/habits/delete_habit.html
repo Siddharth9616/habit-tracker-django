@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-md-6 mx-auto text-center">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h4>Delete "{{ habit.name }}"?</h4>
+      <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger">Yes, Delete</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

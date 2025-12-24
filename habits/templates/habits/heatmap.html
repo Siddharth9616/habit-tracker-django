@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h4 class="mb-3">🔥 Habit Contributions</h4>
+
+<div class="heatmap-container">
+
+  <!-- Month labels -->
+  <div class="month-row">
+    {% for day in heatmap %}
+      {% if day.date.day == 1 %}
+        <span class="month-label">{{ day.month }}</span>
+      {% else %}
+        <span></span>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <!-- Grid -->
+  <div class="heatmap-grid">
+    {% for day in heatmap %}
+      <div
+        class="day"
+        title="{{ day.date }} | {{ day.completed }} habits"
+        style="background-color: {{ day.color }};">
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <span>Less</span>
+    <span class="box" style="background:#161b22"></span>
+    <span class="box" style="background:#0e4429"></span>
+    <span class="box" style="background:#006d32"></span>
+    <span class="box" style="background:#26a641"></span>
+    <span class="box" style="background:#39d353"></span>
+    <span>More</span>
+  </div>
+
+</div>
+{% endblock %}

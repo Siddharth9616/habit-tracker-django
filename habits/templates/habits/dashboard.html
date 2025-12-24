@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block content %}
+
+<div class="row g-4 mb-4">
+
+  <!-- Streak -->
+  <div class="col-md-4">
+    <div class="card shadow-sm text-center">
+      <div class="card-body">
+        <h6 class="achievements-text">🔥 Current Streak</h6>
+        <h2 class="fw-bold">{{ streak }} Days</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- XP -->
+  <div class="col-md-4">
+    <div class="card shadow-sm text-center">
+      <div class="card-body">
+        <h6 class="achievements-text">⭐ XP</h6>
+        <h2 class="fw-bold">{{ xp }}</h2>
+      </div>
+    </div>
+  </div>
+ <!-- Level -->
+  <div class="col-md-4">
+    <div class="card shadow-sm text-center">
+      <div class="card-body">
+        <h6 class="achievements-text">🏆 Level</h6>
+        <h2 class="fw-bold">{{ level }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h5 class="achievements-text">🏅 Achievements</h5>
+
+    {% if badges %}
+      <ul class="list-group">
+        {% for badge in badges %}
+          <li class="list-group-item">{{ badge }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="achievements-text">No badges earned yet. Keep going 💪</p>
+    {% endif %}
+  </div>
+</div>
+
+</div>
+
+<form method="post">
+  {% csrf_token %}
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h5 class="card-title mb-3">✅ Today’s Habits</h5>
+
+      {% for habit in habits %}
+  <div class="d-flex align-items-center justify-content-between mb-2">
+
+    <!-- Left: Checkbox + Name -->
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="habit_{{ habit.id }}"
+        id="habit{{ habit.id }}"
+        {% if logs|get_item:habit.id %}checked{% endif %}
+      >
+      <label class="{% if logs.habit_id %}habit-completed{% endif %}">
+       {{ habit.name }}
+      </label>
+
+    </div>
+
+    <!-- Right: Action buttons -->
+    <div>
+      <a
+        href="{% url 'edit_habit' habit.id %}"
+        class="btn btn-sm btn-outline-warning me-1"
+      >
+        Edit
+      </a>
+      <a
+        href="{% url 'delete_habit' habit.id %}"
+        class="btn btn-sm btn-outline-danger"
+      >
+        Delete
+      </a>
+    </div>
+
+  </div>
+{% empty %}
+  <p class="text-muted">No habits added yet.</p>
+{% endfor %}
+
+
+      <button class="btn btn-success mt-3">Save Today</button>
+    </div>
+  </div>
+</form>
+
+
+<!-- Charts -->
+<div class="row g-4">
+
+  <!-- Matplotlib -->
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">📈 Monthly Progress</h5>
+        <img src="{% url 'monthly_chart' %}" class="img-fluid rounded" alt="Monthly Chart">
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js -->
+  <div class="col-lg-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">📊 Today</h5>
+        <canvas id="dailyChart" height=></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+fetch("{% url 'daily_data' %}")
+  .then(response => response.json())
+  .then(data => {
+
+    const ctx = document.getElementById('dailyChart').getContext('2d');
+
+    const total = data.data.reduce((a, b) => a + b, 0);
+    const completed = data.data[0];
+    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    const centerText = {
+      id: 'centerText',
+      afterDraw(chart) {
+        const { ctx, chartArea } = chart;
+        ctx.save();
+        ctx.font = 'bold 24px sans-serif';
+        ctx.fillStyle = '#198754';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(
+          `${percentage}%`,
+          (chartArea.left + chartArea.right) / 2,
+          (chartArea.top + chartArea.bottom) / 2
+        );
+      }
+    };
+
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: data.labels,
+        datasets: [{
+          data: data.data,
+          backgroundColor: ['#198754', '#dee2e6'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        cutout: '70%',
+        animation: {
+          animateRotate: true,
+          animateScale: true,
+          duration: 1500,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      },
+      plugins: [centerText]
+    });
+
+  });
+</script>
+
+
+
+
+{% endblock %}
