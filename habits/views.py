@@ -248,3 +248,20 @@ def heatmap(request):
     return render(request, "habits/heatmap.html", {
         "heatmap": heatmap_data
     })
+
+
+@login_required
+def profile(request):
+    profile = UserProfile.objects.get(user=request.user)
+
+    total_habits = Habit.objects.filter(user=request.user).count()
+    total_completions = HabitLog.objects.filter(
+        habit__user = request.user,
+        completed=True
+    ).count()
+
+    return render(request, "habits\profile.html", {
+        "profile": profile,
+        "total_habits": total_habits,
+        "total_completions": total_completions,
+    })

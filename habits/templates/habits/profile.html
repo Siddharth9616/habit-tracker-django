@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row g-4">
+
+  <!-- Profile Info -->
+  <div class="col-md-4">
+    <div class="card shadow-sm text-center">
+      <div class="card-body">
+        <h4 class="fw-bold">{{ request.user.username }}</h4>
+        <p class="text-muted">{{ request.user.email }}</p>
+        <hr>
+        <p>📅 Joined: {{ request.user.date_joined|date:"M d, Y" }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="col-md-8">
+    <div class="row g-3">
+
+      <div class="col-md-4">
+        <div class="card shadow-sm text-center">
+          <div class="card-body">
+            <h6>🔥 Current Streak</h6>
+            <h3>{{ profile.current_streak }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow-sm text-center">
+          <div class="card-body">
+            <h6>🏆 Best Streak</h6>
+            <h3>{{ profile.best_streak }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card shadow-sm text-center">
+          <div class="card-body">
+            <h6>⭐ XP</h6>
+            <h3>{{ profile.xp }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card shadow-sm text-center">
+          <div class="card-body">
+            <h6>🎯 Level</h6>
+            <h3>{{ profile.level }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card shadow-sm text-center">
+          <div class="card-body">
+            <h6>📌 Total Habits</h6>
+            <h3>{{ total_habits }}</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="card shadow-sm text-center">
+          <div class="card-body">
+            <h6>✅ Total Completions</h6>
+            <h3>{{ total_completions }}</h3>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

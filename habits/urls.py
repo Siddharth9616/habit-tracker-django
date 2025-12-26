@@ -11,6 +11,7 @@ urlpatterns = [
     path('weekly/', views.weekly_analytics, name='weekly_analytics'),
     path('heatmap/', views.heatmap, name='heatmap'),
     path("api/daily-chart/", views.daily_chart_data, name="daily_chart_data"),
+    path("profile/", views.profile, name="profile"),
 
 
 ]
