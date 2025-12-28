@@ -260,7 +260,7 @@ def profile(request):
         completed=True
     ).count()
 
-    return render(request, "habits\profile.html", {
+    return render(request, "habits/profile.html", {
         "user": request.user,
         "profile": profile,
         "total_habits": total_habits,
