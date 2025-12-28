@@ -1,12 +1,14 @@
-from datetime import date, timedelta
+from django.utils import timezone
 from .models import Habit, HabitLog, UserProfile
+
+from datetime import timedelta
 
 
 BASE_XP = 10
 
 def update_streak_and_xp(user):
     profile, _ = UserProfile.objects.get_or_create(user=user)
-    today = date.today()
+    today = timezone.localdate()
 
     # Count completed habits today
     completed_today = HabitLog.objects.filter(

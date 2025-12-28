@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from io import BytesIO
-from datetime import date, timedelta
+from django.utils import timezone
 import calendar
 from collections import defaultdict
 
@@ -14,6 +14,7 @@ from .forms import HabitForm
 from .utils import  get_badges
 from .utils import update_streak_and_xp
 from habits.models import UserProfile
+from datetime import timedelta
 
 
 
@@ -22,7 +23,7 @@ from habits.models import UserProfile
 # -------------------------
 @login_required
 def monthly_chart(request):
-    today = date.today()
+    today = timezone.localdate()
     year, month = today.year, today.month
 
     logs = HabitLog.objects.filter(
@@ -57,7 +58,7 @@ def monthly_chart(request):
 # -------------------------
 @login_required
 def daily_chart_data(request):
-    today = date.today()
+    today = timezone.localdate()
 
     completed = HabitLog.objects.filter(
         habit__user=request.user,
@@ -79,7 +80,7 @@ def daily_chart_data(request):
 # -------------------------
 @login_required
 def dashboard(request):
-    today = date.today()
+    today = timezone.localdate()
     habits = Habit.objects.filter(user=request.user)
 
     logs = {
@@ -181,7 +182,7 @@ def delete_habit(request, habit_id):
 # -------------------------
 @login_required
 def weekly_analytics(request):
-    today = date.today()
+    today = timezone.localdate()
     data = []
 
     for i in range(6, -1, -1):
@@ -224,7 +225,7 @@ def heatmap(request):
     user = request.user
     total_habits = Habit.objects.filter(user=user).count()
 
-    today = date.today()
+    today = timezone.localdate()
     start_date = today - timedelta(days=365)
 
     completed_logs = (
