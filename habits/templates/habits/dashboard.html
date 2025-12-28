@@ -201,10 +201,10 @@
 </div>
 
 
-
+<canvas id="dailyChart" width="220" height="220"></canvas>
 
 <script>
-fetch("{% url 'daily_data' %}")
+fetch("{% url 'daily_chart_data' %}")
   .then(response => response.json())
   .then(data => {
 
@@ -219,7 +219,7 @@ fetch("{% url 'daily_data' %}")
       afterDraw(chart) {
         const { ctx, chartArea } = chart;
         ctx.save();
-        ctx.font = 'bold 24px sans-serif';
+        ctx.font = 'bold 22px sans-serif';
         ctx.fillStyle = '#198754';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -228,6 +228,7 @@ fetch("{% url 'daily_data' %}")
           (chartArea.left + chartArea.right) / 2,
           (chartArea.top + chartArea.bottom) / 2
         );
+        ctx.restore();
       }
     };
 
@@ -246,8 +247,7 @@ fetch("{% url 'daily_data' %}")
         animation: {
           animateRotate: true,
           animateScale: true,
-          duration: 1500,
-          easing: 'easeOutQuart'
+          duration: 1200
         },
         plugins: {
           legend: {
@@ -258,9 +258,14 @@ fetch("{% url 'daily_data' %}")
       plugins: [centerText]
     });
 
-  });
+  })
+  .catch(err => console.error("Daily chart error:", err));
 
-  .btn-primary {
+
+</script>
+
+<style>
+   .btn-primary {
   border-radius: 20px;
   padding: 4px 12px;
   font-weight: 500;
@@ -277,11 +282,7 @@ fetch("{% url 'daily_data' %}")
 .modal-footer {
   border-top: none;
 }
-
-
-</script>
-
-
+</style>
 
 
 {% endblock %}

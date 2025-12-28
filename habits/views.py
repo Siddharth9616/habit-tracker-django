@@ -15,6 +15,9 @@ from .utils import  get_badges
 from .utils import update_streak_and_xp
 from habits.models import UserProfile
 from datetime import timedelta
+import matplotlib
+
+matplotlib.use("Agg")
 
 
 
