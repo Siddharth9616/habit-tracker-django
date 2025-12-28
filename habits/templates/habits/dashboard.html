@@ -2,6 +2,45 @@
 {% load custom_tags %}
 {% block content %}
 
+<!-- Add Habit Modal -->
+<div class="modal fade" id="addHabitModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">➕ Add New Habit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="post" action="{% url 'add_habit' %}">
+        {% csrf_token %}
+
+        <div class="modal-body">
+          <label class="form-label">Habit Name</label>
+          <input
+            type="text"
+            name="name"
+            class="form-control"
+            placeholder="e.g. Wake up at 6 AM"
+            required>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button"
+                  class="btn btn-outline-secondary"
+                  data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-success">
+            Save Habit
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
 <div class="mb-4 text-center">
   <h2 class="fw-bold">
     👋 Welcome back, <span class="text-primary">{{ request.user.first_name|default:request.user.username }}</span>
@@ -67,7 +106,16 @@
   <!-- ⏳ Incomplete Habits -->
   <div class="card shadow-sm mb-4">
     <div class="card-body">
-      <h5 class="mb-3">⏳ Incomplete Habits</h5>
+      <h5 class="mb-3">⏳ Remaining habits</h5>
+
+      <button
+      type="button"
+       class="btn btn-sm btn-primary position-absolute"
+       style="top: 15px; right: 15px;"
+       data-bs-toggle="modal"
+       data-bs-target="#addHabitModal">
+       ➕ Add Habit
+      </button>
 
       {% for habit in incomplete_habits %}
       <div class="d-flex justify-content-between align-items-center mb-2">
@@ -152,6 +200,9 @@
 
 </div>
 
+
+
+
 <script>
 fetch("{% url 'daily_data' %}")
   .then(response => response.json())
@@ -208,6 +259,26 @@ fetch("{% url 'daily_data' %}")
     });
 
   });
+
+  .btn-primary {
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-weight: 500;
+}
+
+.modal-content {
+  border-radius: 16px;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+
 </script>
 
 
