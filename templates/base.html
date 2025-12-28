@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+  {% load static %}
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="{% static 'icons/icon-192.png' %}">
 <head>
     <meta charset="UTF-8">
     <title>Habit Tracker</title>
@@ -11,6 +15,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+
 </head>
 <body>
 
