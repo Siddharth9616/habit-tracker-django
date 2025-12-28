@@ -28,5 +28,10 @@ class UserProfile(models.Model):
     best_streak = models.IntegerField(default=0)
     last_active_date = models.DateField(null=True, blank=True)
 
+    avatar = models.CharField(
+        max_length=100,
+        default="avatar1.png"
+    )
+
     def __str__(self):
         return self.user.username

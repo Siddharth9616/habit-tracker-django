@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .auth_views import user_login, user_signup, user_logout
 
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
@@ -12,6 +13,9 @@ urlpatterns = [
     path('heatmap/', views.heatmap, name='heatmap'),
     path("api/daily-chart/", views.daily_chart_data, name="daily_chart_data"),
     path("profile/", views.profile, name="profile"),
+    path("login/", user_login, name="login"),
+    path("signup/", user_signup, name="signup"),
+    path("logout/", user_logout, name="logout"),
 
 
 ]

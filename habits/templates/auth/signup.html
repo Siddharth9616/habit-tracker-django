@@ -1,25 +1,101 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
+
 <div class="row justify-content-center">
   <div class="col-md-4">
     <div class="card shadow-sm">
       <div class="card-body">
-        <h4 class="text-center mb-3">Sign Up</h4>
+
+        <h4 class="text-center mb-3">Create Account 🚀</h4>
+
+        <!-- Messages -->
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
 
         <form method="post">
           {% csrf_token %}
-          <input class="form-control mb-2" name="username" placeholder="Username" required>
-          <input class="form-control mb-2" type="password" name="password1" placeholder="Password" required>
-          <input class="form-control mb-3" type="password" name="password2" placeholder="Confirm Password" required>
 
-          <button class="btn btn-success w-100">Create Account</button>
+          <!-- Username -->
+          <input
+            class="form-control mb-2"
+            name="username"
+            placeholder="Username"
+            required
+          >
+
+          <!-- Email -->
+          <input
+            class="form-control mb-2"
+            type="email"
+            name="email"
+            placeholder="Email address"
+            required
+          >
+
+          <!-- Password -->
+          <div class="input-group mb-2">
+            <input
+              class="form-control"
+              type="password"
+              name="password1"
+              id="password1"
+              placeholder="Password"
+              required
+            >
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onclick="togglePassword('password1')"
+            >
+              👁
+            </button>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="input-group mb-3">
+            <input
+              class="form-control"
+              type="password"
+              name="password2"
+              id="password2"
+              placeholder="Confirm Password"
+              required
+            >
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              onclick="togglePassword('password2')"
+            >
+              👁
+            </button>
+          </div>
+
+          <button class="btn btn-success w-100">
+            Create Account
+          </button>
         </form>
 
         <p class="text-center mt-3">
-          Already have an account? <a href="{% url 'login' %}">Login</a>
+          Already have an account?
+          <a href="{% url 'login' %}">Login</a>
         </p>
+
       </div>
     </div>
   </div>
 </div>
+
+<script>
+function togglePassword(id) {
+  const input = document.getElementById(id);
+  input.type = input.type === "password" ? "text" : "password";
+}
+</script>
+
 {% endblock %}

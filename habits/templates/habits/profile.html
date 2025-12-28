@@ -1,81 +1,149 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
 
-<div class="row g-4">
+<div class="row justify-content-center">
+  <div class="col-lg-7">
 
-  <!-- Profile Info -->
-  <div class="col-md-4">
-    <div class="card shadow-sm text-center">
-      <div class="card-body">
-        <h4 class="fw-bold">{{ request.user.username }}</h4>
-        <p class="text-muted">{{ request.user.email }}</p>
-        <hr>
-        <p>📅 Joined: {{ request.user.date_joined|date:"M d, Y" }}</p>
+    <div class="card shadow-sm p-4 text-center">
+
+      <!-- Avatar -->
+      <div class="d-flex justify-content-center mb-3">
+        <img
+          src="{% static 'avatars/' %}{{ profile.avatar }}"
+          class="profile-avatar"
+          alt="Avatar"
+        >
       </div>
+
+
+      <h4 class="fw-bold">{{ user.username }}</h4>
+      <p class="text-muted mb-2">Level {{ profile.level }}</p>
+
+      <!-- XP Progress -->
+      <div class="progress mb-3" style="height: 10px;">
+        <div
+          class="progress-bar bg-success"
+          role="progressbar"
+          style="width: {{ xp_progress }}%;"
+        ></div>
+      </div>
+      <small class="text-muted">{{ profile.xp }} XP</small>
+
+      <hr>
+
+      <!-- Stats -->
+      <div class="row text-center mb-3">
+        <div class="col">
+          <h5>{{ profile.current_streak }}</h5>
+          <small>Current Streak</small>
+        </div>
+        <div class="col">
+          <h5>{{ profile.best_streak }}</h5>
+          <small>Best Streak</small>
+        </div>
+        <div class="col">
+          <h5>{{ success_rate }}%</h5>
+          <small>Success Rate</small>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Habit Stats -->
+      <p class="mb-1">
+        <strong>Total Habits:</strong> {{ total_habits }}
+      </p>
+      <p class="mb-1">
+        <strong>Total Completions:</strong> {{ total_completions }}
+      </p>
+
+      {% if top_habit %}
+        <p class="mt-2">
+          🏆 <strong>Top Habit:</strong> {{ top_habit }}
+        </p>
+      {% else %}
+        <p class="text-muted">No completed habits yet</p>
+      {% endif %}
+
+      <hr>
+
+      <!-- Avatar Selection -->
+      <h6 class="mb-2">Choose Avatar</h6>
+
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+
+          {% for avatar in avatars %}
+            <label>
+              <input
+                type="radio"
+                name="avatar"
+                value="{{ avatar }}"
+                class="d-none"
+                {% if profile.avatar == avatar %}checked{% endif %}
+              >
+
+              <img
+                src="{% static 'avatars/' %}{{ avatar }}"
+                width="60"
+                height="60"
+                class="rounded-circle avatar-option
+                {% if profile.avatar == avatar %}selected{% endif %}"
+              >
+            </label>
+          {% endfor %}
+
+        </div>
+
+        <button class="btn btn-primary mt-3">
+          Save Avatar
+        </button>
+      </form>
+
     </div>
+
   </div>
-
-  <!-- Stats -->
-  <div class="col-md-8">
-    <div class="row g-3">
-
-      <div class="col-md-4">
-        <div class="card shadow-sm text-center">
-          <div class="card-body">
-            <h6>🔥 Current Streak</h6>
-            <h3>{{ profile.current_streak }}</h3>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card shadow-sm text-center">
-          <div class="card-body">
-            <h6>🏆 Best Streak</h6>
-            <h3>{{ profile.best_streak }}</h3>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-4">
-        <div class="card shadow-sm text-center">
-          <div class="card-body">
-            <h6>⭐ XP</h6>
-            <h3>{{ profile.xp }}</h3>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="card shadow-sm text-center">
-          <div class="card-body">
-            <h6>🎯 Level</h6>
-            <h3>{{ profile.level }}</h3>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="card shadow-sm text-center">
-          <div class="card-body">
-            <h6>📌 Total Habits</h6>
-            <h3>{{ total_habits }}</h3>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-12">
-        <div class="card shadow-sm text-center">
-          <div class="card-body">
-            <h6>✅ Total Completions</h6>
-            <h3>{{ total_completions }}</h3>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
 </div>
+
+<style>
+.avatar-option {
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.2s ease, border 0.2s ease;
+}
+
+.avatar-option:hover {
+  transform: scale(1.1);
+  border-color: #0d6efd;
+}
+
+.avatar-option.selected {
+  border: 3px solid #0d6efd;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #22c55e; /* green ring */
+  background: #fff;
+}
+
+.profile-avatar {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.7); }
+  70% { box-shadow: 0 0 0 15px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+
+</style>
 
 {% endblock %}

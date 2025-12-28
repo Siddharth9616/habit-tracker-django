@@ -2,6 +2,16 @@
 {% load custom_tags %}
 {% block content %}
 
+<div class="mb-4 text-center">
+  <h2 class="fw-bold">
+    👋 Welcome back, <span class="text-primary">{{ request.user.first_name|default:request.user.username }}</span>
+  </h2>
+  <p class="text-muted">
+    Let’s keep your habits strong today 💪
+  </p>
+</div>
+
+
 <div class="row g-4 mb-4">
 
   <!-- Streak -->
@@ -54,54 +64,67 @@
 <form method="post">
   {% csrf_token %}
 
+  <!-- ⏳ Incomplete Habits -->
   <div class="card shadow-sm mb-4">
     <div class="card-body">
-      <h5 class="card-title mb-3">✅ Today’s Habits</h5>
+      <h5 class="mb-3">⏳ Incomplete Habits</h5>
 
-      {% for habit in habits %}
-  <div class="d-flex align-items-center justify-content-between mb-2">
+      {% for habit in incomplete_habits %}
+      <div class="d-flex justify-content-between align-items-center mb-2">
 
-    <!-- Left: Checkbox + Name -->
-    <div class="form-check">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        name="habit_{{ habit.id }}"
-        id="habit{{ habit.id }}"
-        {% if logs|get_item:habit.id %}checked{% endif %}
-      >
-      <label class="{% if logs.habit_id %}habit-completed{% endif %}">
-       {{ habit.name }}
-      </label>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="habit_{{ habit.id }}"
+            id="habit{{ habit.id }}"
+          >
+          <label class="form-check-label">
+            {{ habit.name }}
+          </label>
+        </div>
 
+        <div>
+          <a href="{% url 'edit_habit' habit.id %}" class="btn btn-sm btn-outline-warning me-1">Edit</a>
+          <a href="{% url 'delete_habit' habit.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+        </div>
+
+      </div>
+      {% empty %}
+      <p class="text-muted">No pending habits 🎉</p>
+      {% endfor %}
     </div>
 
-    <!-- Right: Action buttons -->
-    <div>
-      <a
-        href="{% url 'edit_habit' habit.id %}"
-        class="btn btn-sm btn-outline-warning me-1"
-      >
-        Edit
-      </a>
-      <a
-        href="{% url 'delete_habit' habit.id %}"
-        class="btn btn-sm btn-outline-danger"
-      >
-        Delete
-      </a>
+    <!-- ✅ Completed Habits -->
+
+    <div class="card-body">
+      <h5 class="mb-3 text-success">✅ Completed Today</h5>
+
+      {% for habit in completed_habits %}
+      <div class="form-check mb-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          checked
+          name="habit_{{ habit.id }}"
+          id="habit{{ habit.id }}"
+        >
+        <label class="form-check-label text-decoration-line-through text-muted">
+          {{ habit.name }}
+        </label>
+      </div>
+      {% empty %}
+      <p class="text-muted">No habits completed yet.</p>
+      {% endfor %}
     </div>
 
+    <button class="btn btn-success">💾 Save Today</button>
   </div>
-{% empty %}
-  <p class="text-muted">No habits added yet.</p>
-{% endfor %}
-
-
-      <button class="btn btn-success mt-3">Save Today</button>
-    </div>
-  </div>
+  
 </form>
+
+
+
 
 
 <!-- Charts -->

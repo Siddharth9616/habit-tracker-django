@@ -82,20 +82,6 @@ def dashboard(request):
     today = date.today()
     habits = Habit.objects.filter(user=request.user)
 
-    if request.method == 'POST':
-        for habit in habits:
-            completed = request.POST.get(f"habit_{habit.id}") == "on"
-
-            HabitLog.objects.update_or_create(
-                habit=habit,
-                date=today,
-                defaults={'completed': completed}
-            )
-
-        update_streak_and_xp(request.user)
-        return redirect('dashboard')  # ✅ redirect AFTER save
-
-    # ✅ Load logs for today
     logs = {
         log.habit_id: log.completed
         for log in HabitLog.objects.filter(
@@ -104,16 +90,39 @@ def dashboard(request):
         )
     }
 
-    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    if request.method == "POST":
+        for habit in habits:
+            completed = request.POST.get(f"habit_{habit.id}") == "on"
+            HabitLog.objects.update_or_create(
+                habit=habit,
+                date=today,
+                defaults={"completed": completed}
+            )
+        update_streak_and_xp(request.user)
+        return redirect("dashboard")
+
+    completed_habits = []
+    incomplete_habits = []
+
+    for habit in habits:
+        if logs.get(habit.id):
+            completed_habits.append(habit)
+        else:
+            incomplete_habits.append(habit)
+
+    profile = request.user.userprofile
 
     return render(request, "habits/dashboard.html", {
-        "habits": habits,
+        "completed_habits": completed_habits,
+        "incomplete_habits": incomplete_habits,
         "logs": logs,
         "streak": profile.current_streak,
-        "xp": profile.xp,
-        "level": profile.level,
-        "badges": get_badges(profile.current_streak),
+        "xp":profile.xp,
+        "level":profile.level,
+        "profile": profile,
+        "username": request.user.first_name or request.user.username,
     })
+
 
 
 
@@ -254,15 +263,46 @@ def heatmap(request):
 def profile(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
 
+    if request.method == "POST":
+        selected_avatar = request.POST.get("avatar")
+        if selected_avatar:
+            profile.avatar = selected_avatar
+            profile.save()
+            return redirect("profile")
+
     total_habits = Habit.objects.filter(user=request.user).count()
     total_completions = HabitLog.objects.filter(
         habit__user = request.user,
         completed=True
     ).count()
 
+    success_rate = (
+        int((total_completions / (total_habits * 10)) * 100)
+        if total_habits > 0 else 0
+    )
+
+    xp_for_next_level = profile.level * 100
+    xp_progress = int((profile.xp / xp_for_next_level) * 100)
+
+    top_habit = (
+        HabitLog.objects.filter(habit__user=request.user, completed=True).values("habit__name")
+        .annotate(c=Count("id")).order_by("-c").first()
+    )
+
+    avatars = [
+        "avatar1.gif",
+        "avatar2.gif",
+        "avatar3.gif",
+        "avatar4.gif",
+    ]
+
     return render(request, "habits/profile.html", {
         "user": request.user,
         "profile": profile,
+        "success_rate": success_rate,
+        "xp_progress": min(xp_progress, 100),
+        "top_habit": top_habit["habit__name"] if top_habit else None,
         "total_habits": total_habits,
         "total_completions": total_completions,
+        "avatars": avatars,
     })
