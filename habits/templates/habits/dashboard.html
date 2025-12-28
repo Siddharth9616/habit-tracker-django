@@ -6,7 +6,7 @@
   <h2 class="fw-bold">
     👋 Welcome back, <span class="text-primary">{{ request.user.first_name|default:request.user.username }}</span>
   </h2>
-  <p class="text-muted">
+  <p>
     Let’s keep your habits strong today 💪
   </p>
 </div>
@@ -109,7 +109,7 @@
           name="habit_{{ habit.id }}"
           id="habit{{ habit.id }}"
         >
-        <label class="form-check-label text-decoration-line-through text-muted">
+        <label class="form-check-label ">
           {{ habit.name }}
         </label>
       </div>
