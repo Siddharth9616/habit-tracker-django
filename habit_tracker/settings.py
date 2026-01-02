@@ -42,7 +42,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ["*",  
     "web-production-393d0.up.railway.app",  # your Railway domain
-    ".up.railway.app",
+    ".railway.app",
     "localhost",
     "127.0.0.1",]
 
@@ -160,13 +160,16 @@ LOGOUT_REDIRECT_URL = 'login'
 
 CSRF_TRUSTED_ORIGINS = [
      "https://web-production-393d0.up.railway.app",
-    "https://*.up.railway.app",
+    "https://*.railway.app",
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_SEMESITE = "None"
+SESSION_COOKIE_SAMESITE = "None"
 
 
 
